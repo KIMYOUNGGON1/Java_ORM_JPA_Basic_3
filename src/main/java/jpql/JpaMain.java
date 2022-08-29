@@ -45,25 +45,14 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select t From Team t";
+            String query = "select m from Member m where m.team = :team";
 
-            List<Team> result = em.createQuery(query, Team.class)
-                    .setFirstResult(0)
-                    .setMaxResults(2)
+            List<Member> members = em.createQuery(query, Member.class)
+                    .setParameter("team", teamA)
                     .getResultList();
 
-            System.out.println("result = " + result.size());
-
-            for (Team team : result) {
-                System.out.println("team = " + team.getName() + "|members = " + team.getMembers().size());
-                for (Member member : team.getMembers()) {
-                    System.out.println("- member = " + member);
-                }
-                //회원1, 팀A(SQL)
-                //회원2, 팀A(1차 캐시)
-                //회원3, 팀B(SQL)
-
-                //회원 100 명 -> N + 1 문제 발생
+            for (Member member : members) {
+                System.out.println("member = " + member);
             }
 
             tx.commit();
